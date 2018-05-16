@@ -25,7 +25,6 @@ if [ -d "$path" ]; then
 	fi
 fi
 
-echo "Create => "$createDir
 if [ "$createDir" -eq "1" ]; then
 	mkdir $path
 fi
@@ -68,3 +67,11 @@ if [ $(mysql -u "$bddUser" -p"$bddPass" -e 'use '"$bddName"'' 2>&1 | grep -v "Wa
 else
 	mysql -u "$bddUser" -p"$bddPass" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
+
+echo "-----------------------------------------------"
+echo "-----------------------------------------------"
+echo "||                                           ||"
+echo "|| \o/ Installation de wordpress réussie \o/ ||"
+echo "||                                           ||"
+echo "-----------------------------------------------"
+echo "-----------------------------------------------"
