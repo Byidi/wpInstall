@@ -1,5 +1,6 @@
 # wpInstall
 
+Script pour télécharger, installer et créer la base de données pour wordpress.
 
 ./wpInstall.sh [chemin d'installation]
 
