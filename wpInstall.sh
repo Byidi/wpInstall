@@ -1,11 +1,5 @@
 #! /bin/bash
 #
-
-bddAdressDefault="localhost"
-bddUserDefault="root"
-bddPassDefault="root"
-bddPrefixDefault="wp_"
-
 createDir=1
 
 if [[ -z "$1" ]]; then
@@ -17,11 +11,11 @@ read -e -p "Adresse base de donnée (localhost) : " -i "localhost" bddAdress
 read -e -p "Utilisateur base de donnée (root) : " -i "root" bddUser
 read -e -p "Mot de passe base de donnée (root) : " -i "root" bddPass
 read -e -p "Préfixe pour les tables (wp_): " -i "wp_" bddPrefix
-	
+
 path=${1%/}
 name=${path##*/}
 bddName=${name/ /_}
-	
+
 if [ -d "$path" ]; then
 	if [ -z "$(ls -A $path)" ]; then
 		createDir=0
@@ -40,7 +34,7 @@ cd $path
 wget https://wordpress.org/latest.tar.gz
 tar -xf ./latest.tar.gz -C ./
 mv ./wordpress/* ./
-rm -rf ./wordpress/	
+rm -rf ./wordpress/
 rm -rf ./latest.tar.gz
 
 cp wp-config-sample.php wp-config.php
@@ -74,6 +68,3 @@ if [ $(mysql -u "$bddUser" -p"$bddPass" -e 'use '"$bddName"'' 2>&1 | grep -v "Wa
 else
 	mysql -u "$bddUser" -p"$bddPass" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
-
-
-
