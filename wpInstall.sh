@@ -37,14 +37,14 @@ else
 	dirExist=false
 fi
 
-if [ $(mysql -u "$bddUser" -p"$bddPass" -h "$bddAdress" -P"$bddPort" -e 'use mysql' 2>&1 | grep -v "Warning*" | wc -l) -ge 1  ]; then
+if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use mysql' 2>&1 | grep -v "Warning*" | wc -l) -ge 1  ]; then
 	echo "Impossible de se connecter au serveur de base de données"
 	exit 1
 fi
 
-if [ $(mysql -u "$bddUser" -p"$bddPass" -h "$bddAdress" -P"$bddPort" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
+if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
 	bddExist=true
-	if [ $(mysql -u "$bddUser" -p"$bddPass" -h "$bddAdress" -P"$bddPort" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
+	if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
 		bddEmpty=false
 		echo "Une base de données "$bddname" existe déjà et n'est pas vide"
 		exit 1
