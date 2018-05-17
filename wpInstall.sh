@@ -1,16 +1,21 @@
 #! /bin/bash
 #
-createDir=1
+createDir=true
 
 if [[ -z "$1" ]]; then
 	echo "wpInstall.sh [chemin d'installation]"
 	exit 1
 fi
 
-read -e -p "Adresse base de donnée (localhost) : " -i "localhost" bddAdress
-read -e -p "Utilisateur base de donnée (root) : " -i "root" bddUser
-read -e -p "Mot de passe base de donnée (root) : " -i "root" bddPass
-read -e -p "Préfixe pour les tables (wp_): " -i "wp_" bddPrefix
+read -e -p "Adresse base de donnée (localhost) : " bddAdress
+read -e -p "Utilisateur base de donnée (root) : " bddUser
+read -e -p "Mot de passe base de donnée (root) : " bddPass
+read -e -p "Préfixe pour les tables (wp_): " bddPrefix
+
+bddAdress="${bddAdress:=localhost}"
+bddUser="${bddUser:=root}"
+bddPass="${bddPass:=root}"
+bddPrefix="${bddPrefix:=wp_}"
 
 path=${1%/}
 name=${path##*/}
@@ -18,14 +23,14 @@ bddName=${name/ /_}
 
 if [ -d "$path" ]; then
 	if [ -z "$(ls -A $path)" ]; then
-		createDir=0
+		createDir=false
 	else
 		echo "Le répertoire" $path "existe déjà et n'est pas vide"
 		exit 1
 	fi
 fi
 
-if [ "$createDir" -eq "1" ]; then
+if [ $createDir == true ]; then
 	mkdir $path
 fi
 
@@ -60,7 +65,6 @@ done
 
 if [ $(mysql -u "$bddUser" -p"$bddPass" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
 	if [ $(mysql -u "$bddUser" -p"$bddPass" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
-		echo "---------------------"
 		echo "Une base de données "$bddname" existe déjà et n'est pas vide"
 		exit 1
 	fi
