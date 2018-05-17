@@ -1,5 +1,3 @@
-# wpInstall
-
 -------------------------------------------------------------------------
 
 Collection de scripts pour wordpress.
