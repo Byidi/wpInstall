@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------
 
-Collection de scripts pour wordpress.
+wpTools : Collection de scripts pour wordpress.
 
 -------------------------------------------------------------------------
 
