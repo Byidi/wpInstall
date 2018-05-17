@@ -6,7 +6,7 @@ Collection de scripts pour wordpress.
 
 -------------------------------------------------------------------------
 
-wpInstall.sh :
+<h2>wpInstall :</h2>
 - Télécharge la dernière version de wordpress
 - Extrait l'archive et la déplace à l'emplacement indiqué
 - Crée la base de données
@@ -14,11 +14,11 @@ wpInstall.sh :
 
     ./wpInstall.sh [chemin d'installation]
 
-    ex : ./wpInstall.sh /var/www/html/wordpress
+    ex : $ ./wpInstall.sh /var/www/html/wordpress
 
 -------------------------------------------------------------------------
 
-wpChildTheme.sh :
+<h2>wpChildTheme :</h2>
 
 - Liste les thèmes installé
 - Crée un thème enfant du thème sélectionné
@@ -30,7 +30,7 @@ wpChildTheme.sh :
 
 -------------------------------------------------------------------------
 
-wpDump.sh :
+<h2>wpDump :</h2>
 
 - Exporte les tables de la base de données 
 - Copie les fichiers du wordpress
