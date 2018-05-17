@@ -1,7 +1,8 @@
 # wpInstall
 
-wpInstall.sh :
+Collections de scripts pour wordpress.
 
+wpInstall.sh :
     - Télécharge la dernière version de wordpress
     - Extrait l'archive et la déplace à l'emplacement indiqué
     - Crée la base de données
