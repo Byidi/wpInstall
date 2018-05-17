@@ -5,8 +5,6 @@ dirEmpty=true
 bddExist=false
 bddEmpty=true
 
-createDir=true
-
 if [[ -z "$1" ]]; then
 	echo "wpInstall.sh [chemin d'installation]"
 	exit 1
