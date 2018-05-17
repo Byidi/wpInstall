@@ -27,3 +27,15 @@ wpChildTheme.sh :
     ./wpChildTheme.sh [chemin du wordpress]
 
     ex : ./wpChildTheme.sh /var/www/html/wordpress
+
+-------------------------------------------------------------------------
+
+wpDump.sh :
+
+- Exporte les tables de la base de données 
+- Copie les fichiers du wordpress
+- Compresse le tout
+    
+    ./wpDump.sh [chemin du wordpress] [chemin de sauvegarde]
+
+    ex : ./wpDump.sh ~/backup/
