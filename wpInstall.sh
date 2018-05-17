@@ -10,13 +10,13 @@ if [[ -z "$1" ]]; then
 	exit 1
 fi
 
-read -e -p "Adresse base de donnée (127.0.0.1) : " bddAdress
+read -e -p "Adresse base de donnée (127.0.0.1) : " bddAddress
 read -e -p "Port base de donnée (3306) : " bddPort
 read -e -p "Utilisateur base de donnée (root) : " bddUser
 read -e -p "Mot de passe base de donnée (root) : " bddPass
 read -e -p "Préfixe pour les tables (wp_): " bddPrefix
 
-bddAdress="${bddAdress:=127.0.0.1}"
+bddAddress="${bddAddress:=127.0.0.1}"
 bddPort="${bddPort:=3306}"
 bddUser="${bddUser:=root}"
 bddPass="${bddPass:=root}"
@@ -37,14 +37,14 @@ else
 	dirExist=false
 fi
 
-if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use mysql' 2>&1 | grep -v "Warning*" | wc -l) -ge 1  ]; then
+if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use mysql' 2>&1 | grep -v "Warning*" | wc -l) -ge 1  ]; then
 	echo "Impossible de se connecter au serveur de base de données"
 	exit 1
 fi
 
-if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
+if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
 	bddExist=true
-	if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAdress" -P"$bddPort" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
+	if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
 		bddEmpty=false
 		echo "Une base de données "$bddname" existe déjà et n'est pas vide"
 		exit 1
@@ -75,7 +75,7 @@ if [ $dirExist == true -a $dirEmpty == true ]; then
 	sed -i -e 's/username_here/'$bddUser'/g' wp-config.php
 	sed -i -e 's/votre_mdp_de_bdd/'$bddPass'/g' wp-config.php
 	sed -i -e 's/password_here/'$bddPass'/g' wp-config.php
-	sed -i -e 's/localhost/'$bddAdress'/g' wp-config.php
+	sed -i -e 's/localhost/'$bddAddress'/g' wp-config.php
 	sed -i -e 's/utf8/utf8mb4/g' wp-config.php
 	sed -i -e "s/table_prefix  = 'wp_';/table_prefix  = '"$bddPrefix"';/g" wp-config.php
 
@@ -90,7 +90,7 @@ if [ $dirExist == true -a $dirEmpty == true ]; then
 fi
 
 if [ $bddExist == false ]; then
-	mysql -u "$bddUser" -p"$bddPass" -h "$bddAdress" -P"$bddPort" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
+	mysql -u "$bddUser" -p"$bddPass" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
 
 echo "-----------------------------------------------"
