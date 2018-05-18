@@ -115,3 +115,51 @@ echo -n "Restoration des fichiers : "
 mkdir -p "$copyPath"
 cp -R "$extractPath""$extractDir"/"$name"/* "$copyPath"
 echo "Done"
+
+oldSiteUrl=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4;SELECT option_value FROM wp_options WHERE option_name="siteurl";' | grep -v option_value)
+echo "Le champs siteurl de la base de données indique : "$oldSiteUrl
+while true; do
+	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepUrl
+	keepUrl="${keepUrl:=o}"
+	if [[ $keepUrl == "n" ]]; then
+		keepUrl=false
+		break
+	fi
+	if [[ $keepUrl == "o" ]]; then
+		keepUrl=true
+		break
+	fi
+done
+if [[ $keepUrl == false ]]; then
+	read -e -p "Nouvelle valeur pour siteurl (["$oldSiteUrl"]) : " siteUrl
+	siteUrl="${siteUrl:=$oldSiteUrl}"
+	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4; UPDATE wp_options SET option_value="'$siteUrl'" WHERE option_name="siteurl";'
+fi
+
+oldHome=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4;SELECT option_value FROM wp_options WHERE option_name="home";' | grep -v option_value)
+echo "Le champs home de la base de données indique : "$oldHome
+while true; do
+	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepHome
+	keepHome="${keepHome:=o}"
+	if [[ $keepHome == "n" ]]; then
+		keepHome=false
+		break
+	fi
+	if [[ $keepHome == "o" ]]; then
+		keepHome=true
+		break
+	fi
+done
+if [[ $keepHome == false ]]; then
+	read -e -p "Nouvelle valeur pour home (["$oldHome"]) : " home
+	home="${home:=$oldHome}"
+	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4; UPDATE wp_options SET option_value="'$home'" WHERE option_name="home";'
+fi
+
+echo "-----------------------------------------------"
+echo "-----------------------------------------------"
+echo "||                                           ||"
+echo "|| \o/ Récupération de wordpress réussie \o/ ||"
+echo "||                                           ||"
+echo "-----------------------------------------------"
+echo "-----------------------------------------------"
