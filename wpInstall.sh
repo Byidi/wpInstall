@@ -90,7 +90,7 @@ if [ $dirExist == true -a $dirEmpty == true ]; then
 fi
 
 if [ $bddExist == false ]; then
-	mysql -u "$bddUser" -p"$bddPass" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
+	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
 
 echo "-----------------------------------------------"
