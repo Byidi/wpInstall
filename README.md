@@ -37,3 +37,16 @@ wpTools : Collection de scripts pour wordpress.
     ./wpDump.sh [chemin du wordpress] [chemin de sauvegarde]
 
     ex : ./wpDump.sh ~/backup/
+    
+-------------------------------------------------------------------------
+
+<h2>wpRestore :</h2>
+
+- Extrait une sauvegarde effectuée avec wpDump.sh
+- Restaure les tables de la base de données 
+- Restaure les fichiers du wordpress
+- Changement des informations de la base de donnée possible
+    
+    ./wpRestore.sh [chemin de la sauvegarde] [chemin d'installation]
+
+    ex : ./wpRestore.sh ~/backup/wordpress_20180518_091853.tar.gz /var/www/html/
