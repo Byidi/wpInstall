@@ -44,7 +44,7 @@ fi
 
 if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"'' 2>&1 | grep -v "Warning*" | wc -l) -eq 0 ]; then
 	bddExist=true
-	if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use "$bddName";show tables' | wc -l)  -gt "0" ]; then
+	if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"';show tables' | wc -l)  -gt "0" ]; then
 		bddEmpty=false
 		echo "Une base de données "$bddname" existe déjà et n'est pas vide"
 		exit 1
