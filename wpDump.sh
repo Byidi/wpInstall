@@ -26,7 +26,7 @@ echo "- User : "$bddUser
 echo "- Pass : ************"
 echo "- Adress : "$bddAddress
 
-echo -n "Création des répertoires : " 
+echo -n "Création des répertoires : "
 mkdir -p "$savePath"/"$name"/"$name"_"$saveDate"/sql
 echo "Done"
 
@@ -49,5 +49,5 @@ echo "Done"
 
 echo -n "Nettoyage : "
 cd "$savePath"
-rm -r "$savePath"/"$name"/"$name"_"$saveDate"/
+rm -r "$name"/"$name"_"$saveDate"/
 echo "Done"
