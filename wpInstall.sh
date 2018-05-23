@@ -10,11 +10,11 @@ if [[ -z "$1" ]]; then
 	exit 1
 fi
 
-read -e -p "Adresse base de donnée (127.0.0.1) : " bddAddress
-read -e -p "Port base de donnée (3306) : " bddPort
-read -e -p "Utilisateur base de donnée (root) : " bddUser
-read -e -p "Mot de passe base de donnée (root) : " bddPass
-read -e -p "Préfixe pour les tables (wp_): " bddPrefix
+read -e -p "Adresse base de donnée ([127.0.0.1]) : " bddAddress
+read -e -p "Port base de donnée ([3306]) : " bddPort
+read -e -p "Utilisateur base de donnée ([root]) : " bddUser
+read -e -p "Mot de passe base de donnée ([root]) : " bddPass
+read -e -p "Préfixe pour les tables ([wp_]): " bddPrefix
 
 bddAddress="${bddAddress:=127.0.0.1}"
 bddPort="${bddPort:=3306}"
