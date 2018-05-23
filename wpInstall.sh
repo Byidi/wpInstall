@@ -93,6 +93,29 @@ if [ $bddExist == false ]; then
 	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE '"$bddName"' CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
 
+read -e -p "Gérer les droits d'accès des fichiers ? ([o]/n) : " fileMode
+fileMode="${fileMode:=o}"
+
+if [[ $fileMode == "o" ]]; then
+	defaultGroup=$(groups | cut -d' ' -f1)
+	read -e -p "Propriétaire des fichiers ([www-data]) : " fileUser
+	read -e -p "Groupe des fichiers ([$defaultGroup]) : " fileGroup
+	read -e -p "Droits des fichiers ([775]) : " fileValue
+	read -e -p "Utiliser sudo ? ([o]/n) : " useSudo
+	fileUser="${fileUser:=www-data}"
+	fileGroup="${fileGroup:=$defaultGroup}"
+	fileValue="${fileValue:=775}"
+	useSudo="${useSudo:=o}"
+
+	if [[ $useSudo == "o" ]]; then
+		sudo chown -R "$fileUser":"$fileGroup" "$path"
+		sudo chmod -R "$fileValue" "$path"
+	else
+		chown -R "$fileUser":"$fileGroup" "$path"
+		chmod -R "$fileValue" "$path"
+	fi
+fi
+
 echo "-----------------------------------------------"
 echo "-----------------------------------------------"
 echo "||                                           ||"
