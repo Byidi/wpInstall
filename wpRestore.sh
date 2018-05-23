@@ -156,6 +156,29 @@ if [[ $keepHome == false ]]; then
 	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4; UPDATE wp_options SET option_value="'$home'" WHERE option_name="home";'
 fi
 
+read -e -p "Gérer les droits d'accès des fichiers ? ([o]/n) : " fileMode
+fileMode="${fileMode:=o}"
+
+if [[ $fileMode == "o" ]]; then
+	defaultGroup=$(groups | cut -d' ' -f1)
+	read -e -p "Propriétaire des fichiers ([www-data]) : " fileUser
+	read -e -p "Groupe des fichiers ([$defaultGroup]) : " fileGroup
+	read -e -p "Droits des fichiers ([775]) : " fileValue
+	read -e -p "Utiliser sudo ? ([o]/n) : " useSudo
+	fileUser="${fileUser:=www-data}"
+	fileGroup="${fileGroup:=$defaultGroup}"
+	fileValue="${fileValue:=775}"
+	useSudo="${useSudo:=o}"
+
+	if [[ $useSudo == "o" ]]; then
+		sudo chown -R "$fileUser":"$fileGroup" "$copyPath"
+		sudo chmod -R "$fileValue" "$copyPath"
+	else
+		chown -R "$fileUser":"$fileGroup" "$copyPath"
+		chmod -R "$fileValue" "$copyPath"
+	fi
+fi
+
 echo "-----------------------------------------------"
 echo "-----------------------------------------------"
 echo "||                                           ||"
