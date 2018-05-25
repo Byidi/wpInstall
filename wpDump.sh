@@ -48,6 +48,6 @@ tar -czf "$name"_"$saveDate".tar.gz "$name"_"$saveDate"/
 echo "Done"
 
 echo -n "Nettoyage : "
-cd "$savePath"
+cd ..
 rm -r "$name"/"$name"_"$saveDate"/
 echo "Done"
