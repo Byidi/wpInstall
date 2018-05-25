@@ -97,7 +97,7 @@ if [ $(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e
 else
 	bddExist=false
 fi
-echo $bddExist
+
 echo -n "Restoration de la base de donnée : "
 if [[ $bddExist == false ]];then
 	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE `'"$bddName"'` CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
@@ -113,7 +113,7 @@ mkdir -p "$copyPath"
 cp -R "$extractPath""$extractDir"/"$name"/* "$copyPath"
 echo "Done"
 
-oldSiteUrl=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4;SELECT option_value FROM wp_options WHERE option_name="siteurl";' | grep -v option_value)
+oldSiteUrl=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"';SELECT option_value FROM wp_options WHERE option_name="siteurl";' | grep -v option_value)
 echo "Le champs siteurl de la base de données indique : "$oldSiteUrl
 while true; do
 	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepUrl
