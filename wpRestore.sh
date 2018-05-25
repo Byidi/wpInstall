@@ -34,9 +34,6 @@ if [[ -d "$copyPath" ]]; then
 	fi
 fi
 
-echo $name
-echo $extractDir
-
 echo -n "Récupération des informations : "
 gbddName=$(cat "$extractPath""$extractDir"/"$name"/wp-config.php | grep "DB_NAME" | cut -d"'" -f 4)
 gbddUser=$(cat "$extractPath""$extractDir"/"$name"/wp-config.php | grep "DB_USER" | cut -d"'" -f 4)
