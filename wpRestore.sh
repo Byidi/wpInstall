@@ -2,7 +2,6 @@
 #
 
 extractPath="/tmp/wpt/wpRestore/"
-
 clear
 
 if [[ -z "$2" ]]; then
@@ -27,9 +26,9 @@ else
 	copyPath=$installPath"/"$name
 fi
 
-if [[ -d "$copyPath" ]]; then
-	if [[ ! -z "$(ls -A $copyPath)" ]]; then
-		echo "Le répertoire" $copyPath "existe déjà et n'est pas vide"
+if [[ -d "$installPath" ]]; then
+	if [[ ! -z "$(ls -A $installPath)" ]]; then
+		echo "Le répertoire" $installPath "existe déjà et n'est pas vide"
 		exit 1
 	fi
 fi
@@ -41,6 +40,7 @@ gbddPass=$(cat "$extractPath""$extractDir"/"$name"/wp-config.php | grep "DB_PASS
 gbddAddress=$(cat "$extractPath""$extractDir"/"$name"/wp-config.php | grep "DB_HOST" | cut -d"'" -f 4)
 echo "Done"
 
+echo "- Nom : "$gbddName
 echo "- Adress : "$gbddAddress
 echo "- User : "$gbddUser
 echo "- Pass : ************"
@@ -98,60 +98,44 @@ else
 	bddExist=false
 fi
 
+echo -n "Restoration des fichiers : "
+mkdir -p "$installPath"
+cp -R "$extractPath""$extractDir"/"$name"/* "$installPath"
+cp "$extractPath""$extractDir"/"$name"/.htaccess "$installPath"
+echo "Done"
+
+oldSiteUrl=$(grep siteurl "$extractPath""$extractDir"/sql/wp_options.sql | sed -rn "s/.*?'siteurl','([^']*)/\1@/p" | cut -d"@" -f1)
+siteUrl=$oldSiteUrl
+echo "Le champs siteurl de la base de données indique : "$oldSiteUrl
+while true; do
+	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepUrl
+	keepUrl="${keepUrl:=o}"
+	if [[ $keepUrl == "n" ]]; then
+		read -e -p "Nouvelle valeur pour siteurl (["$oldSiteUrl"]) : " siteUrl
+		siteUrl="${siteUrl:=$oldSiteUrl}"
+		MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"'; UPDATE wp_options SET option_value="'$siteUrl'" WHERE option_name="siteurl";'
+		break
+	fi
+
+	if [[ $keepUrl == "o" ]]; then
+		siteUrl=$oldSiteUrl
+		break
+	fi
+done
+
+
 echo -n "Restoration de la base de donnée : "
 if [[ $bddExist == false ]];then
 	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'CREATE DATABASE `'"$bddName"'` CHARACTER SET utf8 COLLATE utf8_general_ci;'  2>&1 | grep -v "Warning*"
 fi
 
 for sqlFile in "$extractPath""$extractDir"/sql/*; do
+	if [[ $keepUrl == n ]]; then
+		sed -i -e "s@$oldSiteUrl@$siteUrl@g" "$sqlFile"
+	fi
 	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" "$bddName" < "$sqlFile"
 done
 echo "Done"
-
-echo -n "Restoration des fichiers : "
-mkdir -p "$copyPath"
-cp -R "$extractPath""$extractDir"/"$name"/* "$copyPath"
-echo "Done"
-
-oldSiteUrl=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"';SELECT option_value FROM wp_options WHERE option_name="siteurl";' | grep -v option_value)
-echo "Le champs siteurl de la base de données indique : "$oldSiteUrl
-while true; do
-	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepUrl
-	keepUrl="${keepUrl:=o}"
-	if [[ $keepUrl == "n" ]]; then
-		keepUrl=false
-		break
-	fi
-	if [[ $keepUrl == "o" ]]; then
-		keepUrl=true
-		break
-	fi
-done
-if [[ $keepUrl == false ]]; then
-	read -e -p "Nouvelle valeur pour siteurl (["$oldSiteUrl"]) : " siteUrl
-	siteUrl="${siteUrl:=$oldSiteUrl}"
-	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4; UPDATE wp_options SET option_value="'$siteUrl'" WHERE option_name="siteurl";'
-fi
-
-oldHome=$(MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4;SELECT option_value FROM wp_options WHERE option_name="home";' | grep -v option_value)
-echo "Le champs home de la base de données indique : "$oldHome
-while true; do
-	read -e -p "Voulez vous conserver cette valeur ([o]/n): " keepHome
-	keepHome="${keepHome:=o}"
-	if [[ $keepHome == "n" ]]; then
-		keepHome=false
-		break
-	fi
-	if [[ $keepHome == "o" ]]; then
-		keepHome=true
-		break
-	fi
-done
-if [[ $keepHome == false ]]; then
-	read -e -p "Nouvelle valeur pour home (["$oldHome"]) : " home
-	home="${home:=$oldHome}"
-	MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use wpinstall4; UPDATE wp_options SET option_value="'$home'" WHERE option_name="home";'
-fi
 
 read -e -p "Gérer les droits d'accès des fichiers ? ([o]/n) : " fileMode
 fileMode="${fileMode:=o}"
@@ -168,11 +152,11 @@ if [[ $fileMode == "o" ]]; then
 	useSudo="${useSudo:=o}"
 
 	if [[ $useSudo == "o" ]]; then
-		sudo chown -R "$fileUser":"$fileGroup" "$copyPath"
-		sudo chmod -R "$fileValue" "$copyPath"
+		sudo chown -R "$fileUser":"$fileGroup" "$installPath"
+		sudo chmod -R "$fileValue" "$installPath"
 	else
-		chown -R "$fileUser":"$fileGroup" "$copyPath"
-		chmod -R "$fileValue" "$copyPath"
+		chown -R "$fileUser":"$fileGroup" "$installPath"
+		chmod -R "$fileValue" "$installPath"
 	fi
 fi
 
