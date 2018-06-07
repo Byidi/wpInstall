@@ -113,7 +113,6 @@ while true; do
 	if [[ $keepUrl == "n" ]]; then
 		read -e -p "Nouvelle valeur pour siteurl (["$oldSiteUrl"]) : " siteUrl
 		siteUrl="${siteUrl:=$oldSiteUrl}"
-		MYSQL_PWD="$bddPass" mysql -u "$bddUser" -h "$bddAddress" -P"$bddPort" -e 'use '"$bddName"'; UPDATE wp_options SET option_value="'$siteUrl'" WHERE option_name="siteurl";'
 		break
 	fi
 
