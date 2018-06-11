@@ -104,7 +104,6 @@ cp -R "$extractPath""$extractDir"/"$name"/* "$installPath"
 cp "$extractPath""$extractDir"/"$name"/.htaccess "$installPath"
 newName=${installPath##*/}
 sed -i -E "s@RewriteBase /((.+))/@RewriteBase /$newName/@" "$installPath"/.htaccess
-cat "$installPath"/.htaccess
 echo "Done"
 
 oldSiteUrl=$(grep siteurl "$extractPath""$extractDir"/sql/wp_options.sql | sed -rn "s/.*?'siteurl','([^']*)/\1@/p" | cut -d"@" -f1)
