@@ -124,6 +124,7 @@ while true; do
 	fi
 done
 
+siteUrl=${siteUrl%/}
 
 echo -n "Restoration de la base de donnée : "
 if [[ $bddExist == false ]];then
